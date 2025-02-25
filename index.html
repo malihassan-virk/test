@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Android Builds List</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        table { width: 80%; margin: 20px auto; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #f4f4f4; }
+        input { padding: 10px; margin: 10px; width: 50px; text-align: center; }
+        button { padding: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h2>Available Android Builds</h2>
+    <input type="number" id="buildNumber" placeholder="Enter Build #">
+    <button onclick="fetchBuild()">Fetch</button>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Version Name</th>
+                <th>Version Code</th>
+                <th>Release Date</th>
+                <th>Download</th>
+            </tr>
+        </thead>
+        <tbody id="builds-list">
+            <tr><td colspan="4">Enter a build number and click fetch.</td></tr>
+        </tbody>
+    </table>
+
+    <script>
+        const BASE_URL = "https://play.google.com/apps/test/test.skiply.rakbank";
+
+        function fetchBuild() {
+            const buildNumber = document.getElementById("buildNumber").value;
+            if (!buildNumber) {
+                alert("Please enter a build number");
+                return;
+            }
+            
+            const fullUrl = `${BASE_URL}/${buildNumber}`;
+            
+            document.getElementById('builds-list').innerHTML = `
+                <tr>
+                    <td colspan="4"><a href="${fullUrl}" target="_blank">Download Build ${buildNumber}</a></td>
+                </tr>`;
+        }
+    </script>
+</body>
+</html>
