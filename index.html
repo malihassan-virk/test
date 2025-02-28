@@ -3,52 +3,207 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Android Builds List</title>
+    <title>QR Code Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; }
-        table { width: 80%; margin: 20px auto; border-collapse: collapse; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-        th { background-color: #f4f4f4; }
-        input { padding: 10px; margin: 10px; width: 50px; text-align: center; }
-        button { padding: 10px; cursor: pointer; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            margin: auto;
+            margin-top: 50px;
+        }
+
+        .qr-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .qr-box {
+            flex: 1;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .qr-box h4 {
+            margin-bottom: 10px;
+        }
+
+        .warning {
+            font-size: 12px;
+            color: #d9534f;
+            margin-top: 10px;
+        }
+
+        .warning a {
+            color: #007BFF;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .warning a:hover {
+            text-decoration: underline;
+        }
+
+        .input-container {
+            margin-top: 20px;
+        }
+
+        input {
+            width: calc(100% - 24px);
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #007BFF;
+            border-radius: 5px;
+            outline: none;
+            text-align: center;
+            appearance: textfield;
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            margin-top: 15px;
+            background: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: bold;
+        }
+
+        .generate-btn:hover {
+            background: #0056b3;
+        }
+
+        .loader {
+            display: none;
+            margin: 20px auto;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #007BFF;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .qr-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .qrcode {
+            opacity: 0;
+            transform: scale(0.5);
+            transition: opacity 0.5s, transform 0.5s;
+        }
+
+        .qrcode.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        @media (max-width: 600px) {
+            .qr-row {
+                flex-direction: column;
+            }
+        }
     </style>
 </head>
 <body>
-    <h2>Available Android Builds</h2>
-    <input type="number" id="buildNumber" placeholder="Enter Build #">
-    <button onclick="fetchBuild()">Fetch</button>
-    
-    <table>
-        <thead>
-            <tr>
-                <th>Version Name</th>
-                <th>Version Code</th>
-                <th>Release Date</th>
-                <th>Download</th>
-            </tr>
-        </thead>
-        <tbody id="builds-list">
-            <tr><td colspan="4">Enter a build number and click fetch.</td></tr>
-        </tbody>
-    </table>
+
+    <div class="container">
+
+        <div class="qr-row">
+            <!-- Left QR Code (Fixed) -->
+            <div class="qr-box">
+                <h4>📲 Join Skiply Testing Group</h4>
+                <div class="qr-container">
+                    <div id="fixedQRCode"></div>
+                </div>
+                <p class="warning">⚠️ Please ask the Skiply team to invite you to the testing group before scanning.</p>
+            </div>
+
+            <!-- Right QR Code (Generated) -->
+            <div class="qr-box">
+                <h4>📥 Download Specific Build</h4>
+                <div class="input-container">
+                    <input type="number" id="buildNumber" placeholder="Enter build number">
+                </div>
+                <button class="generate-btn" onclick="generateQRCode()">Generate QR Code</button>
+                <div class="loader" id="loader"></div>
+                <div class="qr-container">
+                    <div id="qrcode"></div>
+                </div>
+                <p class="warning">
+                    ⚠️ Enable <a href="https://support.google.com/googleplay/android-developer/answer/9844679" target="_blank">Internal App Sharing</a> from your Google Play settings before scanning.<br>
+                    If you face any issues, please follow this <a href="https://support.google.com/googleplay/android-developer/answer/9845334" target="_blank">document</a>.
+                </p>
+            </div>
+        </div>
+    </div>
 
     <script>
-        const BASE_URL = "https://play.google.com/apps/test/test.skiply.rakbank";
+        // Generate Fixed QR Code
+        function generateFixedQRCode() {
+            var fixedLink = "https://play.google.com/apps/internaltest/4701673809336004541"; // Replace with actual link
+            new QRCode(document.getElementById("fixedQRCode"), fixedLink);
+            document.getElementById("fixedQRCode").classList.add("show");
+        }
 
-        function fetchBuild() {
-            const buildNumber = document.getElementById("buildNumber").value;
+        // Generate Build-Specific QR Code
+        function generateQRCode() {
+            var buildNumber = document.getElementById("buildNumber").value;
             if (!buildNumber) {
-                alert("Please enter a build number");
+                alert("Please enter a build number.");
                 return;
             }
-            
-            const fullUrl = `${BASE_URL}/${buildNumber}`;
-            
-            document.getElementById('builds-list').innerHTML = `
-                <tr>
-                    <td colspan="4"><a href="${fullUrl}" target="_blank">Download Build ${buildNumber}</a></td>
-                </tr>`;
+
+            var appPackage = "test.skiply.rakbank"; // Replace with actual package name
+            var qrLink = `https://play.google.com/apps/test/${appPackage}/${buildNumber}`;
+
+            document.getElementById("qrcode").innerHTML = ""; // Clear previous QR code
+            document.getElementById("qrcode").classList.remove("show"); // Hide previous QR code
+            document.getElementById("loader").style.display = "block"; // Show loading
+
+            setTimeout(() => {
+                new QRCode(document.getElementById("qrcode"), qrLink);
+                document.getElementById("loader").style.display = "none"; // Hide loading
+                document.getElementById("qrcode").classList.add("show"); // Show QR code with animation
+            }, 1000);
         }
+
+        // Initialize Fixed QR Code on Page Load
+        generateFixedQRCode();
     </script>
+
 </body>
 </html>
