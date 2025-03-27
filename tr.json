@@ -1,82 +1,21 @@
-<tr>
-                <td
-                  dir="rtl"
-                  style="
-                    padding-top: 12px;
-                    padding-bottom: 12.51px;
-                    padding-left: 23px;
-                    padding-right: 23px;
-                  "
-                >
-                  <p
-                    class="color-838993"
-                    width="100.00%"
-                    style="
-                      font-size: 10px;
-                      font-weight: 400;
-                      color: #838993;
-                      margin: 0;
-                      padding: 0;
-                      width: 100%;
-                      line-height: 13.2px;
-                      text-align: right;
-                      mso-line-height-rule: exactly;
-                    "
-                  >
-                    <span>
-                      هذه رسالة بريد إلكتروني آلية، يرجى عدم الرد. بحاجة إلى
-                      مساعدة؟ راسلنا عبر البريد الإلكتروني على
-                    </span>
-                    <a
-                      style="text-decoration: none"
-                      href="mailto:contactus@skiply.ae?subject=Your%20e-receipt%20for%20the%20Skiply%20Payment"
-                      target="_blank"
-                    >
-                      <span
-                        class="color-1f549a"
-                        style="
-                          font-size: 10px;
-                          font-weight: 400;
-                          color: #1f549a;
-                          text-align: right;
-                        "
-                        >contactus@skiply.ae</span
-                      >
-                    </a>
-                  </p>
-                  <p
-                    class="color-838993"
-                    width="100.00%"
-                    style="
-                      font-size: 10px;
-                      font-weight: 400;
-                      color: #838993;
-                      margin: 0;
-                      padding-top: 8px;
-                      padding-bottom: 8px;
-                      width: 100%;
-                      line-height: 13.2px;
-                      text-align: right;
-                      mso-line-height-rule: exactly;
-                    "
-                  >
-                    <span th:text="${termsTitle_ar}"></span>
-                  </p>
-                  <p
-                    class="color-838993"
-                    width="100.00%"
-                    style="
-                      font-size: 10px;
-                      font-weight: 400;
-                      color: #838993;
-                      margin: 0;
-                      width: 100%;
-                      line-height: 13.2px;
-                      text-align: right;
-                      mso-line-height-rule: exactly;
-                    "
-                  >
-                    <span th:text="${termsAndConditions_ar}"></span>
-                  </p>
-                </td>
-              </tr>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>method</key>
+        <string>app-store</string>
+        <key>teamID</key>
+        <string>75RV3XGR47</string>
+        <key>signingStyle</key>
+        <string>manual</string>
+        <key>signingCertificate</key>
+        <string>iPhone Distribution: National Bank of Ras Al Khaimah (75RV3XGR47)</string>
+        <key>provisioningProfiles</key>
+        <dict>
+            <key>ae.skiply.rakbank</key>
+            <string>SKIPLY_TEST_DISTRIBUTION</string>
+        </dict>
+    </dict>
+</plist>
+
+exportOptionsPlist: ios/Skiply/exportOptions.plist
